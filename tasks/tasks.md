@@ -104,7 +104,7 @@
 
 ## APP-005: Build Express API Endpoints (CRUD for Posts)
 
-**Status:** Not Started  
+**Status:** In Progress  
 **Priority:** High  
 **Dependencies:** APP-002, APP-003
 
@@ -117,13 +117,13 @@
 ### Acceptance Criteria
 
 1. All CRUD operations for posts are functional and tested
-2. Data validation and error handling are implemented
-3. Endpoints follow REST conventions and return appropriate status codes
+2. Data validation and error handling are implemented ✅
+3. Endpoints follow REST conventions and return appropriate status codes ✅
 
 ### Technical Notes
 
-- Structure API routes under `/api` in the Express project
-- Log request/response for troubleshooting
+- Structure API routes under `/api` in the Express project ✅
+- Log request/response for troubleshooting ✅
 
 ---
 
@@ -203,7 +203,7 @@
 
 ## APP-009: External API Integrations (Spotify & Last.fm)
 
-**Status:** Not Started  
+**Status:** In Progress  
 **Priority:** Medium  
 **Dependencies:** APP-004
 
@@ -217,12 +217,12 @@
 
 1. External API calls return valid data for album lookups
 2. Relevant music data is populated in the post creation form
-3. Fallbacks are implemented in case of API failures
+3. Fallbacks are implemented in case of API failures ✅
 
 ### Technical Notes
 
-- Use Axios for HTTP requests
-- Secure API keys in environment variables
+- Use Axios for HTTP requests ✅
+- Secure API keys in environment variables ✅
 
 ---
 
