@@ -10,6 +10,10 @@
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![Node.js](https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen)](https://nodejs.org)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.3.3-blue)](https://www.typescriptlang.org/)
+[![Express](https://img.shields.io/badge/Express-4.18.2-000000?logo=express&logoColor=white)](https://expressjs.com/)
+[![Astro](https://img.shields.io/badge/Astro-latest-ff5a03?logo=astro&logoColor=white)](https://astro.build/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind%20CSS-latest-38B2AC?logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
+[![React](https://img.shields.io/badge/React-latest-61DAFB?logo=react&logoColor=white)](https://react.dev/)
 
 </div>
 
@@ -20,7 +24,11 @@
 - **Post Scheduling** - Create and schedule posts for automatic publishing
 - **Live Preview** - Real-time Discord embed preview while creating posts
 - **Mobile-friendly** - Responsive Progressive Web App (PWA) interface
-- **Mock Database** - Simplified development with mock database support
+- **Mock Database** - Development without native module dependencies:
+  - In-memory JavaScript implementation of SQLite/Drizzle
+  - Conditional activation based on environment variables
+  - Test server with health endpoints for verification
+  - Windows compatibility without Visual Studio build tools
 
 ## 🚀 Tech Stack
 
@@ -36,9 +44,19 @@
         <li>Express.js</li>
         <li>Drizzle ORM</li>
         <li>SQLite/better-sqlite3</li>
-        <li>Passport.js</li>
+        <li>Passport.js (Discord OAuth)</li>
         <li>Node-cron</li>
+        <li>Winston (Logging)</li>
+        <li>Express Middleware:
+          <ul>
+            <li>Helmet (Security)</li>
+            <li>CORS</li>
+            <li>Morgan (HTTP Logging)</li>
+            <li>Express Validator</li>
+          </ul>
+        </li>
         <li>TypeScript</li>
+        <li>Axios</li>
       </ul>
     </td>
     <td>
@@ -49,6 +67,7 @@
         <li>DaisyUI</li>
         <li>Lucide Icons</li>
         <li>TypeScript</li>
+        <li>React Hook Form</li>
       </ul>
     </td>
     <td>
@@ -56,9 +75,19 @@
         <li>Git</li>
         <li>Node.js</li>
         <li>npm</li>
-        <li>Cloudflare Pages</li>
-        <li>Cloudflare Workers</li>
-        <li>Cloudflare D1</li>
+        <li>Environment Management:
+          <ul>
+            <li>dotenv</li>
+            <li>Mock database mode</li>
+          </ul>
+        </li>
+        <li>Deployment Options:
+          <ul>
+            <li>Cloudflare Pages</li>
+            <li>Cloudflare Workers</li>
+            <li>Cloudflare D1</li>
+          </ul>
+        </li>
       </ul>
     </td>
   </tr>
@@ -150,10 +179,11 @@ For development without native module dependencies:
 1. Set up the mock database:
 
    ```bash
+   cd backend
    node setup-mock-db.js
    ```
 
-2. Run the test server:
+2. Run the test server (minimal implementation with just the health endpoint):
 
    ```bash
    node run-test-server.js
@@ -168,15 +198,36 @@ For development without native module dependencies:
 3. Access the health endpoint to verify the server is running:
 
    ```
-   http://localhost:3000/api/health
+   http://localhost:3000/api/health        # Main health endpoint
+   http://localhost:3000/api/music/health  # Music API health endpoint
    ```
+
+4. Server logs are available in:
+
+   ```
+   backend/logs/all.log    # All log messages
+   backend/logs/error.log  # Error messages only
+   ```
+
+5. Troubleshooting:
+   - If you see "ts-node-dev is not a function" errors, run `npm install -g ts-node-dev ts-node`
+   - For scheduler errors, ensure environment variable MOCK_DB is set to "true"
+   - For permissions errors, try running with administrator privileges
 
 #### Production Backend
 
 For production with better-sqlite3:
 
 1. Install Visual Studio 2022 Build Tools with C++ desktop development workload
-2. Run the standard development server:
+2. Run the database setup and migrations:
+
+   ```bash
+   cd backend
+   npm run db:setup
+   npm run db:migrate
+   ```
+
+3. Run the standard development server:
 
    ```bash
    npm run dev
@@ -192,6 +243,48 @@ npm run dev
 ```
 
 Open your browser and navigate to `http://localhost:4321`
+
+## 🧪 API Testing
+
+You can test the backend API endpoints using tools like Postman, curl, or PowerShell:
+
+### Public Endpoints
+
+These endpoints don't require authentication:
+
+```powershell
+# Health check
+Invoke-WebRequest -Uri "http://localhost:3000/api/health" | Select-Object -ExpandProperty Content
+
+# Music API health check
+Invoke-WebRequest -Uri "http://localhost:3000/api/music/health" | Select-Object -ExpandProperty Content
+```
+
+### Protected Endpoints
+
+These endpoints require authentication. You'll get a 401 Unauthorized response without valid authentication:
+
+```powershell
+# Try to access posts (will return 401)
+try {
+  Invoke-WebRequest -Uri "http://localhost:3000/api/posts"
+} catch {
+  Write-Host "Status code:" $_.Exception.Response.StatusCode
+}
+
+# Try to search Spotify (will return 401)
+try {
+  Invoke-WebRequest -Uri "http://localhost:3000/api/music/spotify/search?q=TestQuery"
+} catch {
+  Write-Host "Status code:" $_.Exception.Response.StatusCode
+}
+```
+
+For full API testing with authentication, you'll need to:
+
+1. Configure Discord OAuth credentials in your `.env` file
+2. Log in through the frontend or use a tool that supports OAuth flows
+3. Include the session cookie in your requests
 
 ## 🚀 Deployment
 
