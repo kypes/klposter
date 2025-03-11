@@ -129,7 +129,7 @@
 
 ## APP-006: Implement Scheduling with node-cron
 
-**Status:** Not Started  
+**Status:** In Progress  
 **Priority:** High  
 **Dependencies:** APP-004
 
@@ -141,14 +141,15 @@
 
 ### Acceptance Criteria
 
-1. The scheduler runs at regular intervals (e.g., every minute)
+1. The scheduler runs at regular intervals (e.g., every minute) ✅
 2. Scheduled posts are automatically sent to Discord when their time arrives
 3. Post status is updated to "PUBLISHED" after successful dispatch
 
 ### Technical Notes
 
-- Log scheduler activity for monitoring
+- Log scheduler activity for monitoring ✅
 - Test with a few dummy scheduled posts
+- Properly handle mock database mode ✅
 
 ---
 

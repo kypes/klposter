@@ -19,6 +19,7 @@
   - Environment configuration files
   - Fixed run-with-mock.js to properly spawn ts-node-dev
   - Implemented missing music API routes to fix server startup errors
+  - Fixed scheduler service to properly handle mock mode
 - Authentication with Discord OAuth
 - Post CRUD operations
 - Music API integration (Spotify, Last.fm)
