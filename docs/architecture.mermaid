@@ -1,0 +1,52 @@
+flowchart TD
+  %% Frontend Subgraph: Astro + React + Tailwind CSS
+  subgraph FE[Frontend (Astro + React + Tailwind)]
+    FE_A[Astro Static Site]
+    FE_B[React Interactive Components]
+    FE_C[Local Storage (Auto-Save)]
+    FE_D[PWA Service Worker]
+    FE_A --> FE_B
+    FE_B --> FE_C
+    FE_A --> FE_D
+  end
+
+  %% Backend Subgraph: Express API with Passport, Scheduler, and External Integrations
+  subgraph BE[Backend API (Express)]
+    BE_A[Express Server]
+    BE_B[Passport (Discord OAuth)]
+    BE_C[API Endpoints (CRUD, Scheduling)]
+    BE_D[node-cron Scheduler]
+    BE_E[External API Integration Module]
+    BE_A --> BE_B
+    BE_A --> BE_C
+    BE_A --> BE_D
+    BE_C --> BE_E
+  end
+
+  %% Database Subgraph: SQLite with Drizzle ORM
+  subgraph DB[Database (SQLite + Drizzle ORM)]
+    DB_A[SQLite Database]
+    DB_B[Drizzle ORM]
+    DB_C[User Model]
+    DB_D[Post Model]
+    DB_B --> DB_A
+    DB_B --> DB_C
+    DB_B --> DB_D
+  end
+
+  %% External Services Subgraph: Spotify, Last.fm, and Discord
+  subgraph EX[External Services]
+    EX_A[Spotify API]
+    EX_B[Last.fm API]
+    EX_C[Discord API/Webhooks]
+  end
+
+  %% Interactions
+  FE_B -- "AJAX / Fetch Requests" --> BE_A
+  BE_A -- "Uses Drizzle ORM" --> DB_B
+  BE_C -- "CRUD Ops" --> DB_B
+  BE_D -- "Queries Scheduled Posts" --> DB_D
+  BE_D -- "Sends Posts" --> EX_C
+  BE_E -- "Fetch Music Data" --> EX_A
+  BE_E -- "Fetch Music Data" --> EX_B
+  BE_E -- "Sends/Receives Discord Data" --> EX_C

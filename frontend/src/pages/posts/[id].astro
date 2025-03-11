@@ -1,0 +1,304 @@
+---
+import MainLayout from '../../layouts/MainLayout.astro';
+import { Calendar, Clock, Music, ExternalLink, Edit, Trash2, ArrowLeft } from 'lucide-react';
+
+// Get the post ID from the URL
+const { id } = Astro.params;
+---
+
+<MainLayout title="Post Details">
+  <div class="container mx-auto px-4 py-8">
+    <div class="mb-4">
+      <a href="/dashboard" class="btn btn-ghost gap-2">
+        <ArrowLeft className="w-4 h-4" />
+        Back to Dashboard
+      </a>
+    </div>
+    
+    <div id="post-container" class="animate-pulse">
+      <div class="flex flex-col md:flex-row gap-6">
+        <!-- Album Cover -->
+        <div class="w-full md:w-1/3 lg:w-1/4">
+          <div class="bg-base-300 aspect-square rounded-lg"></div>
+        </div>
+        
+        <!-- Post Details -->
+        <div class="flex-1">
+          <div class="h-8 w-3/4 bg-base-300 rounded mb-2"></div>
+          <div class="h-6 w-1/2 bg-base-300 rounded mb-4"></div>
+          
+          <div class="flex flex-wrap gap-2 mb-4">
+            <div class="h-6 w-24 bg-base-300 rounded"></div>
+          </div>
+          
+          <div class="space-y-2 mb-6">
+            <div class="h-5 w-full bg-base-300 rounded"></div>
+            <div class="h-5 w-full bg-base-300 rounded"></div>
+            <div class="h-5 w-3/4 bg-base-300 rounded"></div>
+          </div>
+          
+          <div class="flex flex-wrap gap-4 mb-6">
+            <div class="h-10 w-32 bg-base-300 rounded"></div>
+            <div class="h-10 w-32 bg-base-300 rounded"></div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Track List -->
+      <div class="mt-8">
+        <div class="h-6 w-32 bg-base-300 rounded mb-4"></div>
+        <div class="space-y-2">
+          <div class="h-10 w-full bg-base-300 rounded"></div>
+          <div class="h-10 w-full bg-base-300 rounded"></div>
+          <div class="h-10 w-full bg-base-300 rounded"></div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Post Actions -->
+    <div id="post-actions" class="mt-8 flex justify-end gap-2 hidden">
+      <button id="edit-post" class="btn btn-primary gap-2">
+        <Edit className="w-4 h-4" />
+        Edit
+      </button>
+      <button id="delete-post" class="btn btn-error gap-2">
+        <Trash2 className="w-4 h-4" />
+        Delete
+      </button>
+    </div>
+    
+    <!-- Delete Confirmation Modal -->
+    <dialog id="delete-modal" class="modal">
+      <div class="modal-box">
+        <h3 class="font-bold text-lg">Confirm Deletion</h3>
+        <p class="py-4">Are you sure you want to delete this post? This action cannot be undone.</p>
+        <div class="modal-action">
+          <button id="cancel-delete" class="btn">Cancel</button>
+          <button id="confirm-delete" class="btn btn-error">Delete</button>
+        </div>
+      </div>
+      <form method="dialog" class="modal-backdrop">
+        <button>close</button>
+      </form>
+    </dialog>
+  </div>
+</MainLayout>
+
+<script define:vars={{ postId: id }}>
+  // Format date for display
+  const formatDate = (dateString) => {
+    if (!dateString) return 'N/A';
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+  };
+  
+  // Format time for display
+  const formatTime = (dateString) => {
+    if (!dateString) return '';
+    const date = new Date(dateString);
+    return date.toLocaleTimeString('en-US', {
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  };
+  
+  // Get status badge HTML
+  const getStatusBadge = (status) => {
+    switch (status) {
+      case 'draft':
+        return `<span class="badge badge-ghost">Draft</span>`;
+      case 'scheduled':
+        return `<span class="badge badge-warning">Scheduled</span>`;
+      case 'published':
+        return `<span class="badge badge-success">Published</span>`;
+      case 'failed':
+        return `<span class="badge badge-error">Failed</span>`;
+      default:
+        return `<span class="badge">${status}</span>`;
+    }
+  };
+  
+  // Fetch post data
+  const fetchPostData = async () => {
+    try {
+      const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/posts/${postId}`, {
+        credentials: 'include'
+      });
+      
+      if (!response.ok) {
+        throw new Error('Failed to fetch post');
+      }
+      
+      const post = await response.json();
+      renderPost(post);
+    } catch (error) {
+      console.error('Error fetching post:', error);
+      document.getElementById('post-container').innerHTML = `
+        <div class="alert alert-error">
+          <p>Failed to load post. Please try again later.</p>
+        </div>
+      `;
+    }
+  };
+  
+  // Render post data
+  const renderPost = (post) => {
+    const trackList = post.trackList ? JSON.parse(post.trackList) : [];
+    
+    document.getElementById('post-container').innerHTML = `
+      <div class="flex flex-col md:flex-row gap-6">
+        <!-- Album Cover -->
+        <div class="w-full md:w-1/3 lg:w-1/4">
+          ${post.imageUrl ? 
+            `<img src="${post.imageUrl}" alt="${post.artist} - ${post.album}" class="w-full aspect-square object-cover rounded-lg shadow-md">` :
+            `<div class="w-full aspect-square bg-base-300 rounded-lg flex items-center justify-center">
+              <span class="text-base-content/50">No Image</span>
+            </div>`
+          }
+        </div>
+        
+        <!-- Post Details -->
+        <div class="flex-1">
+          <h1 class="text-3xl font-bold">${post.title}</h1>
+          <h2 class="text-xl mb-4">${post.artist} - ${post.album}</h2>
+          
+          <div class="flex flex-wrap gap-2 mb-4">
+            ${getStatusBadge(post.status)}
+            ${post.releaseDate ? 
+              `<div class="badge badge-outline gap-1">
+                <Calendar class="w-3 h-3" />
+                Released: ${formatDate(post.releaseDate)}
+              </div>` : ''
+            }
+            ${post.scheduledFor ? 
+              `<div class="badge badge-outline gap-1">
+                <Clock class="w-3 h-3" />
+                Scheduled: ${formatDate(post.scheduledFor)} at ${formatTime(post.scheduledFor)}
+              </div>` : ''
+            }
+          </div>
+          
+          ${post.description ? 
+            `<div class="prose mb-6">
+              <p>${post.description}</p>
+            </div>` : ''
+          }
+          
+          <div class="flex flex-wrap gap-4 mb-6">
+            ${post.spotifyUrl ? 
+              `<a href="${post.spotifyUrl}" target="_blank" rel="noopener noreferrer" class="btn btn-outline gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                  <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm4.059 14.406c-.192.286-.567.383-.85.192-2.325-1.437-5.25-1.76-8.7-.963-.334.095-.663-.144-.758-.48-.096-.335.144-.664.48-.758 3.772-.863 7.013-.48 9.636 1.146.29.192.385.567.192.863zm1.082-2.438c-.241.366-.724.48-1.09.24-2.662-1.653-6.722-2.133-9.865-1.166-.403.096-.82-.144-.916-.55-.096-.403.144-.82.55-.916 3.593-1.08 8.055-.55 11.095 1.3.365.24.48.724.24 1.09l-.014.002zm.095-2.533c-3.197-1.914-8.473-2.09-11.525-1.153-.483.144-.998-.145-1.14-.63-.145-.483.144-.997.627-1.14 3.5-1.06 9.303-.855 12.98 1.345.432.24.58.82.336 1.25-.24.43-.817.578-1.25.335l-.028-.007z"/>
+                </svg>
+                Spotify
+              </a>` : ''
+            }
+            ${post.lastfmUrl ? 
+              `<a href="${post.lastfmUrl}" target="_blank" rel="noopener noreferrer" class="btn btn-outline gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                  <path d="M10.584 17.209l-.88-2.392s-1.43 1.594-3.573 1.594c-1.897 0-3.244-1.649-3.244-4.288 0-3.382 1.704-4.591 3.381-4.591 2.42 0 3.189 1.567 3.849 3.574l.88 2.749c.88 2.666 2.529 4.81 7.285 4.81 3.409 0 5.718-1.044 5.718-3.793 0-2.227-1.265-3.381-3.63-3.931l-1.757-.385c-1.21-.275-1.567-.77-1.567-1.595 0-.935.742-1.485 1.952-1.485 1.32 0 2.034.495 2.144 1.677l2.749-.33c-.22-2.474-1.924-3.492-4.729-3.492-2.474 0-4.893.935-4.893 3.932 0 1.87.907 3.052 3.189 3.602l1.87.44c1.402.33 1.869.907 1.869 1.704 0 1.017-.99 1.43-2.86 1.43-2.776 0-3.93-1.457-4.59-3.464l-.907-2.75c-1.155-3.573-2.997-4.893-6.653-4.893C2.144 5.333 0 7.89 0 12.233c0 4.18 2.144 6.434 5.993 6.434 3.106 0 4.591-1.457 4.591-1.457v-.001z"/>
+                </svg>
+                Last.fm
+              </a>` : ''
+            }
+          </div>
+        </div>
+      </div>
+      
+      <!-- Track List -->
+      ${trackList.length > 0 ? 
+        `<div class="mt-8">
+          <h3 class="text-xl font-bold flex items-center gap-2 mb-4">
+            <Music class="w-5 h-5" />
+            Track List
+          </h3>
+          <div class="overflow-x-auto">
+            <table class="table table-zebra w-full">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Title</th>
+                  <th>Duration</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${trackList.map((track, index) => `
+                  <tr>
+                    <td>${index + 1}</td>
+                    <td>${track.name}</td>
+                    <td>${track.duration || '—'}</td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+          </div>
+        </div>` : ''
+      }
+    `;
+    
+    // Show post actions
+    document.getElementById('post-actions').classList.remove('hidden');
+    
+    // Setup edit button
+    document.getElementById('edit-post').addEventListener('click', () => {
+      window.location.href = `/posts/edit/${postId}`;
+    });
+    
+    // Setup delete button
+    document.getElementById('delete-post').addEventListener('click', () => {
+      document.getElementById('delete-modal').showModal();
+    });
+    
+    // Setup cancel delete button
+    document.getElementById('cancel-delete').addEventListener('click', () => {
+      document.getElementById('delete-modal').close();
+    });
+    
+    // Setup confirm delete button
+    document.getElementById('confirm-delete').addEventListener('click', async () => {
+      try {
+        const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/posts/${postId}`, {
+          method: 'DELETE',
+          credentials: 'include'
+        });
+        
+        if (!response.ok) {
+          throw new Error('Failed to delete post');
+        }
+        
+        window.location.href = '/dashboard?success=Post deleted successfully';
+      } catch (error) {
+        console.error('Error deleting post:', error);
+        alert('Failed to delete post. Please try again.');
+        document.getElementById('delete-modal').close();
+      }
+    });
+  };
+  
+  // Check if user is authenticated
+  const checkAuth = async () => {
+    try {
+      const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/auth/user`, {
+        credentials: 'include'
+      });
+      
+      if (!response.ok) {
+        // Redirect to login if not authenticated
+        window.location.href = '/login?error=Please log in to view posts';
+      } else {
+        // Fetch post data if authenticated
+        fetchPostData();
+      }
+    } catch (error) {
+      console.error('Auth check error:', error);
+      window.location.href = '/login?error=Authentication error';
+    }
+  };
+  
+  // Run auth check when page loads
+  checkAuth();
+</script> 

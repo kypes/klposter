@@ -1,0 +1,42 @@
+{
+  "name": "klposter-frontend",
+  "version": "1.0.0",
+  "description": "Frontend for Discord Music Release Web App",
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro",
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx,.astro",
+    "format": "prettier --write \"**/*.{js,jsx,ts,tsx,astro,json,css}\""
+  },
+  "dependencies": {
+    "@astrojs/react": "^3.0.7",
+    "@astrojs/tailwind": "^5.0.3",
+    "@astrojs/vercel": "^6.0.1",
+    "@types/react": "^18.2.42",
+    "@types/react-dom": "^18.2.17",
+    "astro": "^4.0.3",
+    "daisyui": "^4.4.19",
+    "lodash.debounce": "^4.0.8",
+    "lucide-react": "^0.294.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-hook-form": "^7.48.2",
+    "tailwindcss": "^3.3.6"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^6.13.2",
+    "@typescript-eslint/parser": "^6.13.2",
+    "eslint": "^8.55.0",
+    "eslint-plugin-astro": "^0.30.0",
+    "eslint-plugin-jsx-a11y": "^6.8.0",
+    "eslint-plugin-react": "^7.33.2",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "prettier": "^3.1.0",
+    "prettier-plugin-astro": "^0.12.2",
+    "typescript": "^5.3.3"
+  }
+}

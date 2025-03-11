@@ -1,0 +1,90 @@
+---
+import MainLayout from '../layouts/MainLayout.astro';
+import PostList from '../components/PostList';
+import UserProfile from '../components/UserProfile';
+---
+
+<MainLayout title="Dashboard">
+  <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+    <div class="lg:col-span-1">
+      <UserProfile client:load />
+      
+      <div class="card bg-base-200 shadow mt-6">
+        <div class="card-body">
+          <h3 class="card-title text-lg">Quick Links</h3>
+          <div class="flex flex-col gap-2 mt-2">
+            <a href="/posts/new" class="btn btn-primary">
+              Create New Post
+            </a>
+            <a href="/posts" class="btn btn-outline">
+              View All Posts
+            </a>
+            <a href="/settings" class="btn btn-outline">
+              Settings
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="lg:col-span-3">
+      <div class="card bg-base-100 shadow">
+        <div class="card-body">
+          <div class="flex justify-between items-center mb-6">
+            <h2 class="card-title text-2xl">Recent Posts</h2>
+            <a href="/posts/new" class="btn btn-primary btn-sm">
+              New Post
+            </a>
+          </div>
+          
+          <PostList client:load limit={5} />
+        </div>
+      </div>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+        <div class="card bg-base-100 shadow">
+          <div class="card-body">
+            <h3 class="card-title text-lg">Scheduled Posts</h3>
+            <div class="stats shadow mt-4">
+              <div class="stat">
+                <div class="stat-title">Pending</div>
+                <div class="stat-value text-primary">0</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="card bg-base-100 shadow">
+          <div class="card-body">
+            <h3 class="card-title text-lg">Published Posts</h3>
+            <div class="stats shadow mt-4">
+              <div class="stat">
+                <div class="stat-title">Total</div>
+                <div class="stat-value text-secondary">0</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</MainLayout>
+
+<script>
+  // Check if user is authenticated
+  document.addEventListener('DOMContentLoaded', async () => {
+    try {
+      const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/auth/user`, {
+        credentials: 'include'
+      });
+      
+      if (!response.ok) {
+        // Redirect to login if not authenticated
+        window.location.href = '/login';
+      }
+    } catch (error) {
+      console.error('Authentication check failed:', error);
+      window.location.href = '/login';
+    }
+  });
+</script> 

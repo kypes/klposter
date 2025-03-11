@@ -1,0 +1,47 @@
+---
+import MainLayout from '../layouts/MainLayout.astro';
+import { Discord } from 'lucide-react';
+---
+
+<MainLayout title="Login">
+  <div class="flex items-center justify-center min-h-[70vh]">
+    <div class="card w-full max-w-md bg-base-200 shadow-xl">
+      <div class="card-body">
+        <h1 class="card-title text-2xl font-bold text-center mb-6">Login to KLPoster</h1>
+        
+        <p class="text-center mb-8">
+          Sign in with your Discord account to create and manage music release posts.
+        </p>
+        
+        <div class="flex justify-center">
+          <a 
+            href={`https://discord.com/api/oauth2/authorize?client_id=${import.meta.env.PUBLIC_DISCORD_CLIENT_ID}&redirect_uri=${encodeURIComponent(import.meta.env.PUBLIC_DISCORD_REDIRECT_URI)}&response_type=code&scope=identify%20guilds`}
+            class="btn btn-primary btn-lg gap-2"
+          >
+            <Discord className="w-6 h-6" />
+            Login with Discord
+          </a>
+        </div>
+        
+        <div class="divider my-8">OR</div>
+        
+        <div class="text-center">
+          <a href="/" class="link link-hover">
+            Return to Home
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</MainLayout>
+
+<script>
+  // Check for error parameter in URL
+  const urlParams = new URLSearchParams(window.location.search);
+  const error = urlParams.get('error');
+  
+  if (error) {
+    // Show error toast or alert
+    alert(`Authentication error: ${error}`);
+  }
+</script> 

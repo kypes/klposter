@@ -1,0 +1,31 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply antialiased;
+  }
+}
+
+@layer components {
+  .card-hover {
+    @apply transition-all duration-200 hover:shadow-lg hover:-translate-y-1;
+  }
+  
+  .btn-primary-gradient {
+    @apply bg-gradient-to-r from-primary to-primary-focus text-primary-content;
+  }
+  
+  .form-input {
+    @apply input input-bordered w-full;
+  }
+  
+  .form-label {
+    @apply label font-medium;
+  }
+  
+  .form-error {
+    @apply text-error text-sm mt-1;
+  }
+} 
