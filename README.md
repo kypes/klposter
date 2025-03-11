@@ -2,7 +2,7 @@
 
 <div align="center">
   
-![KLPoster Logo](https://via.placeholder.com/150x150.png?text=KL)
+![KLPoster Logo](https://kingdom-leaks.com/img/ripsuit.png)
 
 **A modern web application for Kingdom Leaks Discord community to create, schedule, and publish music release posts to Discord channels.**
 
