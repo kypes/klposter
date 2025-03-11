@@ -17,6 +17,7 @@
   - Mock database setup script
   - Test server script
   - Environment configuration files
+  - Fixed run-with-mock.js to properly spawn ts-node-dev
 - Authentication with Discord OAuth
 - Post CRUD operations
 - Music API integration (Spotify, Last.fm)
@@ -39,6 +40,10 @@
   - dotenv
   - Node.js type declarations
   - better-sqlite3
+- Project documentation:
+  - Professional README with badges, features, and installation instructions
+  - MIT license file
+  - GitHub repository setup and initial deployment
 
 ## Ongoing Tasks
 
