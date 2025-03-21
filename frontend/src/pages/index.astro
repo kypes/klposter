@@ -1,1 +1,101 @@
- 
+---
+import Layout from '../layouts/Layout.astro';
+import { ArrowRight, Music2, Clock, Share2, Disc3, MessageSquare } from 'lucide-react';
+
+// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
+// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+---
+
+<Layout title="KLPoster - Schedule and Share Your Music">
+	<main class="relative min-h-screen">
+		<!-- Background decorations -->
+		<div class="absolute inset-0 overflow-hidden pointer-events-none">
+			<div class="absolute -top-1/4 -right-1/4 w-1/2 h-1/2 bg-gradient-radial from-brand-600/20 via-transparent to-transparent"></div>
+			<div class="absolute -bottom-1/4 -left-1/4 w-1/2 h-1/2 bg-gradient-radial from-brand-400/10 via-transparent to-transparent"></div>
+		</div>
+
+		<!-- Hero section -->
+		<section class="relative pt-32 pb-24 sm:pt-40 sm:pb-32">
+			<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+				<div class="text-center space-y-8 max-w-4xl mx-auto">
+					<h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight gradient-shine animate-gradient">
+						Share Your Music Journey on Discord
+					</h1>
+					<p class="text-xl text-content-400 max-w-2xl mx-auto">
+						Create beautiful, scheduled posts about your favorite music releases. Keep your Discord community engaged with rich album details and automated scheduling.
+					</p>
+					<div class="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
+						<a href="/login" class="btn-primary group relative overflow-hidden">
+							<div class="absolute inset-0 w-3/12 bg-gradient-shine animate-shine opacity-30"></div>
+							<MessageSquare className="w-5 h-5 mr-2" client:load />
+							Sign in with Discord
+						</a>
+						<a href="/posts/new" class="btn-ghost">
+							Create a Post
+							<ArrowRight className="w-5 h-5 ml-2" client:load />
+						</a>
+					</div>
+				</div>
+
+				<!-- Feature grid -->
+				<div class="mt-24 sm:mt-32">
+					<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+						<div class="card p-8 space-y-4 hover:scale-105 transition-transform duration-300">
+							<div class="w-12 h-12 bg-brand/10 rounded-xl flex items-center justify-center">
+								<Disc3 className="w-6 h-6 text-brand" client:load />
+							</div>
+							<h3 class="text-lg font-semibold">Rich Album Details</h3>
+							<p class="text-content-400">Automatically fetch album artwork, track listings, and metadata from multiple music services.</p>
+						</div>
+
+						<div class="card p-8 space-y-4 hover:scale-105 transition-transform duration-300">
+							<div class="w-12 h-12 bg-brand/10 rounded-xl flex items-center justify-center">
+								<Clock className="w-6 h-6 text-brand" client:load />
+							</div>
+							<h3 class="text-lg font-semibold">Smart Scheduling</h3>
+							<p class="text-content-400">Schedule your music posts for the perfect time. Keep your server active with consistent updates.</p>
+						</div>
+
+						<div class="card p-8 space-y-4 hover:scale-105 transition-transform duration-300">
+							<div class="w-12 h-12 bg-brand/10 rounded-xl flex items-center justify-center">
+								<MessageSquare className="w-6 h-6 text-brand" client:load />
+							</div>
+							<h3 class="text-lg font-semibold">Discord Integration</h3>
+							<p class="text-content-400">Create beautiful Discord embeds that showcase your music in style. Perfect for music-focused communities.</p>
+						</div>
+					</div>
+				</div>
+
+				<!-- How it works -->
+				<div class="mt-24 sm:mt-32">
+					<h2 class="text-3xl font-bold text-center mb-12">How It Works</h2>
+					<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+						<div class="text-center space-y-4">
+							<div class="w-12 h-12 mx-auto bg-brand/10 rounded-full flex items-center justify-center">
+								<span class="text-xl font-bold text-brand">1</span>
+							</div>
+							<h3 class="text-lg font-semibold">Sign in with Discord</h3>
+							<p class="text-content-400">Connect your Discord account to get started. No additional setup required.</p>
+						</div>
+
+						<div class="text-center space-y-4">
+							<div class="w-12 h-12 mx-auto bg-brand/10 rounded-full flex items-center justify-center">
+								<span class="text-xl font-bold text-brand">2</span>
+							</div>
+							<h3 class="text-lg font-semibold">Create Your Post</h3>
+							<p class="text-content-400">Search for albums, customize your message, and set your schedule.</p>
+						</div>
+
+						<div class="text-center space-y-4">
+							<div class="w-12 h-12 mx-auto bg-brand/10 rounded-full flex items-center justify-center">
+								<span class="text-xl font-bold text-brand">3</span>
+							</div>
+							<h3 class="text-lg font-semibold">Share & Engage</h3>
+							<p class="text-content-400">Your posts will be automatically shared to your Discord server at the scheduled time.</p>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+	</main>
+</Layout>

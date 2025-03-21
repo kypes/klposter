@@ -3,29 +3,152 @@
 @tailwind utilities;
 
 @layer base {
-  body {
+  :root {
+    --color-brand: 79 70 229;
+    --color-brand-50: 238 242 255;
+    --color-brand-100: 224 231 255;
+    --color-brand-200: 199 210 254;
+    --color-brand-300: 165 180 252;
+    --color-brand-400: 129 140 248;
+    --color-brand-500: 99 102 241;
+    --color-brand-600: 79 70 229;
+    --color-brand-700: 67 56 202;
+    --color-brand-800: 55 48 163;
+    --color-brand-900: 49 46 129;
+    --color-brand-950: 30 27 75;
+
+    --color-surface: 17 24 39;
+    --color-surface-50: 249 250 251;
+    --color-surface-100: 243 244 246;
+    --color-surface-200: 229 231 235;
+    --color-surface-300: 209 213 219;
+    --color-surface-400: 156 163 175;
+    --color-surface-500: 107 114 128;
+    --color-surface-600: 75 85 99;
+    --color-surface-700: 55 65 81;
+    --color-surface-800: 31 41 55;
+    --color-surface-900: 17 24 39;
+    --color-surface-950: 8 8 11;
+
+    --color-content: 255 255 255;
+    --color-content-50: 249 250 251;
+    --color-content-100: 243 244 246;
+    --color-content-200: 229 231 235;
+    --color-content-300: 209 213 219;
+    --color-content-400: 156 163 175;
+    --color-content-500: 107 114 128;
+    --color-content-600: 75 85 99;
+    --color-content-700: 55 65 81;
+    --color-content-800: 31 41 55;
+    --color-content-900: 17 24 39;
+    --color-content-950: 8 8 11;
+
+    --color-success: 34 197 94;
+    --color-warning: 234 179 8;
+    --color-error: 239 68 68;
+  }
+
+  html {
     @apply antialiased;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  }
+
+  body {
+    @apply min-h-screen bg-surface text-content selection:bg-brand-200/20 selection:text-brand-100;
   }
 }
 
 @layer components {
-  .card-hover {
-    @apply transition-all duration-200 hover:shadow-lg hover:-translate-y-1;
+  .btn {
+    @apply inline-flex items-center justify-center px-6 py-2.5 rounded-xl font-medium transition-all duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-surface disabled:opacity-50 disabled:cursor-not-allowed;
   }
-  
-  .btn-primary-gradient {
-    @apply bg-gradient-to-r from-primary to-primary-focus text-primary-content;
+
+  .btn-primary {
+    @apply inline-flex items-center px-4 py-2 rounded-xl font-medium bg-brand text-white hover:bg-brand-600 transition-colors duration-200;
   }
-  
-  .form-input {
-    @apply input input-bordered w-full;
+
+  .btn-secondary {
+    @apply inline-flex items-center px-4 py-2 rounded-xl font-medium bg-surface-800 text-content hover:bg-surface-700 transition-colors duration-200;
   }
-  
-  .form-label {
-    @apply label font-medium;
+
+  .btn-ghost {
+    @apply inline-flex items-center px-4 py-2 rounded-xl font-medium text-content-400 hover:text-content hover:bg-surface-800 transition-colors duration-200;
   }
-  
-  .form-error {
-    @apply text-error text-sm mt-1;
+
+  .input {
+    @apply w-full px-4 py-2.5 bg-surface-100 border-2 border-surface-200 rounded-xl text-content placeholder:text-content-500 
+    focus:ring-2 focus:ring-brand-200 focus:border-transparent transition-all duration-200;
   }
-} 
+
+  .card {
+    @apply bg-surface-800 rounded-2xl border border-surface-700;
+  }
+
+  .glass {
+    @apply bg-surface-100/80 backdrop-blur-lg border border-surface-200/50;
+  }
+}
+
+@layer utilities {
+  .text-gradient {
+    @apply bg-gradient-to-r from-brand-200 via-brand-400 to-brand-600 bg-clip-text text-transparent;
+  }
+
+  .gradient-shine {
+    background: linear-gradient(
+      to right,
+      rgb(var(--color-brand-200)) 0%,
+      rgb(var(--color-brand-300)) 20%,
+      rgb(var(--color-brand-400)) 40%,
+      rgb(var(--color-brand-500)) 60%,
+      rgb(var(--color-brand-600)) 80%,
+      rgb(var(--color-brand-700)) 100%
+    );
+    background-size: 200% auto;
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .bg-gradient-shine {
+    background: linear-gradient(
+      to right,
+      rgb(var(--color-brand-200)) 0%,
+      rgb(var(--color-brand-300)) 20%,
+      rgb(var(--color-brand-400)) 40%,
+      rgb(var(--color-brand-500)) 60%,
+      rgb(var(--color-brand-600)) 80%,
+      rgb(var(--color-brand-700)) 100%
+    );
+    background-size: 200% auto;
+  }
+
+  .animate-gradient {
+    animation: gradient 8s ease infinite;
+  }
+
+  .animate-shine {
+    animation: shine 2s ease-in-out infinite;
+  }
+}
+
+@keyframes gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@keyframes shine {
+  0% {
+    background-position: 200% 50%;
+  }
+  100% {
+    background-position: -200% 50%;
+  }
+}

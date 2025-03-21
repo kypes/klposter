@@ -1,0 +1,56 @@
+---
+import { ArrowRight, Music2, Clock, Share2, Star } from 'lucide-react';
+---
+
+<div class="min-h-[calc(100vh-4rem)] bg-surface flex flex-col items-center justify-center px-4 sm:px-6 lg:px-8 py-12">
+	<div class="max-w-4xl w-full space-y-12 text-center">
+		<div class="space-y-4">
+			<h1 class="text-4xl sm:text-5xl font-bold gradient-shine animate-gradient">
+				Welcome to KLPoster
+			</h1>
+			<p class="text-xl text-content-400 max-w-2xl mx-auto">
+				Share your favorite music with your Discord community. Schedule posts, add rich album details, and create beautiful previews.
+			</p>
+		</div>
+
+		<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+			<div class="card p-6 text-center space-y-4 hover:scale-105 transition-transform duration-300">
+				<div class="w-12 h-12 mx-auto bg-brand/10 rounded-xl flex items-center justify-center">
+					<Music2 className="w-6 h-6 text-brand" />
+				</div>
+				<h3 class="text-lg font-semibold">Rich Album Details</h3>
+				<p class="text-content-400">Search and share albums with complete metadata, artwork, and track listings.</p>
+			</div>
+
+			<div class="card p-6 text-center space-y-4 hover:scale-105 transition-transform duration-300">
+				<div class="w-12 h-12 mx-auto bg-brand/10 rounded-xl flex items-center justify-center">
+					<Clock className="w-6 h-6 text-brand" />
+				</div>
+				<h3 class="text-lg font-semibold">Smart Scheduling</h3>
+				<p class="text-content-400">Plan your posts ahead with our intuitive scheduling system.</p>
+			</div>
+
+			<div class="card p-6 text-center space-y-4 hover:scale-105 transition-transform duration-300">
+				<div class="w-12 h-12 mx-auto bg-brand/10 rounded-xl flex items-center justify-center">
+					<Share2 className="w-6 h-6 text-brand" />
+				</div>
+				<h3 class="text-lg font-semibold">Discord Integration</h3>
+				<p class="text-content-400">Seamlessly share your music discoveries with your Discord community.</p>
+			</div>
+		</div>
+
+		<div class="space-y-6">
+			<div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+				<a href="/posts/new" class="btn-primary group relative overflow-hidden">
+					<div class="absolute inset-0 w-3/12 bg-gradient-shine animate-shine opacity-30"></div>
+					Create a Post
+					<ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
+				</a>
+				<a href="/dashboard" class="btn-secondary">
+					View Dashboard
+					<ArrowRight className="w-5 h-5 ml-2" />
+				</a>
+			</div>
+		</div>
+	</div>
+</div>

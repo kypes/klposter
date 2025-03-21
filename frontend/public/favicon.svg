@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="128" height="128" viewBox="0 0 128 128" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect width="128" height="128" rx="24" fill="url(#gradient)" />
+    <path d="M40 48C40 44.6863 42.6863 42 46 42H82C85.3137 42 88 44.6863 88 48V80C88 83.3137 85.3137 86 82 86H46C42.6863 86 40 83.3137 40 80V48Z" stroke="white" stroke-width="4"/>
+    <path d="M56 58L72 64L56 70V58Z" fill="white"/>
+    <defs>
+        <linearGradient id="gradient" x1="0" y1="0" x2="128" y2="128" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stop-color="#7C3AED"/>
+            <stop offset="100%" stop-color="#4F46E5"/>
+        </linearGradient>
+    </defs>
+    <style>
+        @media (prefers-color-scheme: light) {
+            #gradient stop:first-child { stop-color: #4F46E5; }
+            #gradient stop:last-child { stop-color: #7C3AED; }
+        }
+    </style>
+</svg>

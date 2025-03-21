@@ -2,7 +2,7 @@
 
 ## Overview
 
-The high-level technical architecture for the Discord Music Release Web App. The application is designed to enable members of a Discord Community to create, schedule, and publish music release posts to Discord channels. It aggregates music data from external APIs (Spotify and Last.fm) and leverages Discord’s interactive features. The application is built using a modern, resource-efficient tech stack.
+The high-level technical architecture for the Discord Music Release Web App. The application is designed to enable members of a Discord Community to create, schedule, and publish music release posts to Discord channels. It aggregates music data from external APIs (Deezer, Spotify and Last.fm) and leverages Discord’s interactive features. The application is built using a modern, resource-efficient tech stack.
 
 ## Tech Stack
 
@@ -21,7 +21,7 @@ The high-level technical architecture for the Discord Music Release Web App. The
   - **Tailwind CSS:** Provides a utility-first CSS framework for a modern, responsive UI.
 
 - **External APIs:**
-  - **Spotify API & Last.fm API:** Fetches music release and album details.
+  - **Deezer API, Spotify API & Last.fm API:** Fetches music release and album details.
   - **Discord API/Webhooks:** Enables authentication and messaging features (including interactive elements).
 
 ## Architecture Components
@@ -57,7 +57,7 @@ The high-level technical architecture for the Discord Music Release Web App. The
   A node-cron-based scheduler periodically checks the database for scheduled posts. When a post’s scheduled time arrives, the scheduler dispatches the post to the appropriate Discord channel via API calls or webhooks.
 
 - **External Integrations:**  
-  The backend integrates with the Spotify and Last.fm APIs to enrich post data (album details, tracklist, cover art) and with the Discord API to send interactive messages.
+  The backend integrates with the Deezer, Spotify and Last.fm APIs to enrich post data (album details, tracklist, cover art) and with the Discord API to send interactive messages.
 
 ### 3. Database
 
@@ -81,7 +81,7 @@ The high-level technical architecture for the Discord Music Release Web App. The
 ## Security Considerations
 
 - **API Keys & Sensitive Data:**  
-  All sensitive data (API keys, OAuth secrets, database credentials) are stored in environment variables and are not exposed in the source code.
+  All sensitive data (API keys, OAuth secrets, database credentials, Discord Webhooks) are stored in environment variables and are not exposed in the source code.
 
 - **Authentication & Authorization:**  
   Only verified Discord users who belong to the specified guild are allowed access. Role-based access control (e.g., ADMIN vs. POSTER) is implemented to restrict certain operations.

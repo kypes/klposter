@@ -1,4 +1,5 @@
-import { sqliteTable, text, integer } from 'drizzle-orm/sqlite-core';
+import { sqliteTable, text, integer, primaryKey } from 'drizzle-orm/sqlite-core';
+import { sql } from 'drizzle-orm';
 
 /**
  * Users table schema
@@ -52,4 +53,26 @@ export const channels = sqliteTable('channels', {
   webhookUrl: text('webhook_url'),
   createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
   updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull(),
-}); 
+});
+
+/**
+ * User Settings table schema
+ * Stores user-specific settings and preferences
+ */
+export const userSettings = sqliteTable(
+  'user_settings', 
+  {
+    userId: text('user_id').notNull().references(() => users.id),
+    settingKey: text('setting_key').notNull(),
+    settingValue: text('setting_value').notNull(),
+    createdAt: integer('created_at', { mode: 'timestamp' })
+      .notNull()
+      .default(sql`CURRENT_TIMESTAMP`),
+    updatedAt: integer('updated_at', { mode: 'timestamp' })
+      .notNull()
+      .default(sql`CURRENT_TIMESTAMP`)
+  },
+  (table) => ({
+    pk: primaryKey({ columns: [table.userId, table.settingKey] })
+  })
+); 

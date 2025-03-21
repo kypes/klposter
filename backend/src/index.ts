@@ -8,8 +8,9 @@ import dotenv from 'dotenv';
 import { logger } from './utils/logger';
 import { setupPassport } from './config/passport';
 import { authRoutes } from './routes/auth-routes';
-import { postRoutes } from './routes/post-routes';
+import postRoutes from './routes/post-routes';
 import { musicApiRoutes } from './routes/music-api-routes';
+import albumRoutes from './routes/album.routes';
 import { errorHandler } from './middleware/error-handler';
 import { initScheduler } from './services/scheduler-service';
 import { runMigrations } from './db/migrate';
@@ -56,6 +57,7 @@ runMigrations()
     app.use('/api/auth', authRoutes);
     app.use('/api/posts', postRoutes);
     app.use('/api/music', musicApiRoutes);
+    app.use('/api/albums', albumRoutes);
 
     // Health check endpoint
     app.get('/api/health', (req: express.Request, res: express.Response) => {

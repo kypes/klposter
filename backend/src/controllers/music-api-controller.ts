@@ -1,104 +1,97 @@
 import { Request, Response } from 'express';
-import { searchSpotifyAlbum, searchLastfmAlbum } from '../services/music-api-service';
-import { ApiError } from '../middleware/error-handler';
 import { logger } from '../utils/logger';
+import { searchSpotifyAlbum, searchLastfmAlbum } from '../services/music-api-service';
+import { MusicApiService } from '../services/music-api-service';
+import { ApiError } from '../middleware/error-handler';
+
+// Initialize the music API service
+const musicApiService = new MusicApiService();
 
 /**
- * Search for album on Spotify
+ * Search for an album on Spotify
  */
 export const searchSpotify = async (req: Request, res: Response) => {
   try {
     const { query } = req.query;
     
-    if (!query || typeof query !== 'string') {
-      throw new ApiError(400, 'Query parameter is required');
+    if (!query) {
+      return res.status(400).json({ error: 'Search query is required' });
     }
     
-    const result = await searchSpotifyAlbum(query);
+    const result = await searchSpotifyAlbum(query.toString());
     
     if (!result) {
-      return res.status(404).json({ message: 'No results found' });
+      return res.status(404).json({ error: 'No results found on Spotify' });
     }
     
-    res.status(200).json(result);
+    return res.json(result);
   } catch (error) {
-    logger.error('Error in Spotify search:', error);
-    if (error instanceof ApiError) {
-      throw error;
-    }
-    throw new ApiError(500, 'Failed to search Spotify');
+    logger.error('Spotify search error:', error);
+    return res.status(500).json({ error: 'Error searching Spotify' });
   }
 };
 
 /**
- * Search for album on Last.fm
+ * Search for an album on Last.fm
  */
 export const searchLastfm = async (req: Request, res: Response) => {
   try {
     const { artist, album } = req.query;
     
-    if (!artist || typeof artist !== 'string') {
-      throw new ApiError(400, 'Artist parameter is required');
+    if (!artist || !album) {
+      return res.status(400).json({ error: 'Both artist and album parameters are required' });
     }
     
-    if (!album || typeof album !== 'string') {
-      throw new ApiError(400, 'Album parameter is required');
-    }
-    
-    const result = await searchLastfmAlbum(artist, album);
+    const result = await searchLastfmAlbum(artist.toString(), album.toString());
     
     if (!result) {
-      return res.status(404).json({ message: 'No results found' });
+      return res.status(404).json({ error: 'No results found on Last.fm' });
     }
     
-    res.status(200).json(result);
+    return res.json(result);
   } catch (error) {
-    logger.error('Error in Last.fm search:', error);
-    if (error instanceof ApiError) {
-      throw error;
-    }
-    throw new ApiError(500, 'Failed to search Last.fm');
+    logger.error('Last.fm search error:', error);
+    return res.status(500).json({ error: 'Error searching Last.fm' });
   }
 };
 
 /**
- * Combine data from Spotify and Last.fm
+ * Get detailed album information from Spotify or Last.fm
  */
-export const combineAlbumData = async (req: Request, res: Response) => {
+export const getAlbumInfo = async (req: Request, res: Response) => {
   try {
-    const { query, artist, album } = req.query;
+    const { source, id } = req.query;
     
-    if (!query || typeof query !== 'string') {
-      throw new ApiError(400, 'Query parameter is required');
+    if (!source) {
+      return res.status(400).json({ error: 'Source is required (spotify or lastfm)' });
     }
     
-    // Search Spotify first
-    const spotifyData = await searchSpotifyAlbum(query);
-    
-    if (!spotifyData) {
-      return res.status(404).json({ message: 'No results found on Spotify' });
+    if (!id) {
+      return res.status(400).json({ error: 'ID is required' });
     }
     
-    // Then search Last.fm with the artist and album from Spotify
-    const lastfmData = await searchLastfmAlbum(
-      artist as string || spotifyData.artist,
-      album as string || spotifyData.title
-    );
+    let result;
     
-    // Combine the data
-    const combinedData = {
-      ...spotifyData,
-      ...lastfmData,
-      // If both have tracks, prefer Spotify's but use Last.fm's if missing
-      tracks: spotifyData.tracks?.length ? spotifyData.tracks : lastfmData?.tracks
-    };
+    if (source.toString().toLowerCase() === 'spotify') {
+      result = await musicApiService.getSpotifyAlbumInfo(id.toString());
+    } else if (source.toString().toLowerCase() === 'lastfm') {
+      // For Last.fm, ID is expected to be in the format "artist/album"
+      const [artist, album] = id.toString().split('/');
+      if (!artist || !album) {
+        return res.status(400).json({ error: 'For Last.fm, ID must be in the format "artist/album"' });
+      }
+      result = await musicApiService.getLastFmAlbumInfo(`${artist} ${album}`);
+    } else {
+      return res.status(400).json({ error: 'Invalid source. Use "spotify" or "lastfm"' });
+    }
     
-    res.status(200).json(combinedData);
+    if (!result) {
+      return res.status(404).json({ error: 'Album not found' });
+    }
+    
+    return res.json(result);
   } catch (error) {
-    logger.error('Error combining album data:', error);
-    if (error instanceof ApiError) {
-      throw error;
-    }
-    throw new ApiError(500, 'Failed to retrieve album data');
+    logger.error('Error fetching album info:', error);
+    return res.status(500).json({ error: 'Error fetching album info' });
   }
 }; 

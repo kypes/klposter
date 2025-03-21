@@ -1,0 +1,81 @@
+---
+import { Menu, X, Music2 } from 'lucide-react';
+---
+
+<nav class="fixed top-0 left-0 right-0 z-50 bg-surface-900/50 backdrop-blur-xl border-b border-surface-800/50">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex items-center justify-between h-16">
+      <!-- Logo -->
+      <div class="flex-shrink-0 flex items-center gap-2">
+        <Music2 client:load className="w-6 h-6 text-brand" />
+        <a href="/" class="text-xl font-bold gradient-shine animate-gradient">
+          KLPoster
+        </a>
+      </div>
+
+      <!-- Desktop Navigation -->
+      <div class="hidden md:flex md:items-center md:space-x-8">
+        <a href="/dashboard" class="text-content-400 hover:text-content transition-colors">Dashboard</a>
+        <a href="/posts/new" class="text-content-400 hover:text-content transition-colors">Create Post</a>
+        <a href="/posts" class="text-content-400 hover:text-content transition-colors">My Posts</a>
+        <a href="/settings" class="text-content-400 hover:text-content transition-colors">Settings</a>
+      </div>
+
+      <!-- Desktop CTA -->
+      <div class="hidden md:flex md:items-center md:space-x-4">
+        <a href="/login" class="btn-ghost">Sign in with Discord</a>
+        <a href="/posts/new" class="btn-primary group relative overflow-hidden">
+          <div class="absolute inset-0 w-3/12 bg-gradient-shine animate-shine opacity-30"></div>
+          Create Post
+        </a>
+      </div>
+
+      <!-- Mobile menu button -->
+      <div class="flex md:hidden">
+        <button
+          type="button"
+          class="mobile-menu-button inline-flex items-center justify-center p-2 rounded-xl text-content-400 hover:text-content hover:bg-surface-800 transition-colors"
+          aria-controls="mobile-menu"
+          aria-expanded="false"
+        >
+          <span class="sr-only">Open main menu</span>
+          <Menu client:load className="block h-6 w-6 menu-icon" />
+          <X client:load className="hidden h-6 w-6 close-icon" />
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mobile menu -->
+  <div class="hidden md:hidden" id="mobile-menu">
+    <div class="px-2 pt-2 pb-3 space-y-1 bg-surface-900/50 backdrop-blur-xl border-b border-surface-800/50">
+      <a href="/dashboard" class="block px-3 py-2 rounded-xl text-content-400 hover:text-content hover:bg-surface-800 transition-colors">Dashboard</a>
+      <a href="/posts/new" class="block px-3 py-2 rounded-xl text-content-400 hover:text-content hover:bg-surface-800 transition-colors">Create Post</a>
+      <a href="/posts" class="block px-3 py-2 rounded-xl text-content-400 hover:text-content hover:bg-surface-800 transition-colors">My Posts</a>
+      <a href="/settings" class="block px-3 py-2 rounded-xl text-content-400 hover:text-content hover:bg-surface-800 transition-colors">Settings</a>
+      <div class="pt-4 space-y-2">
+        <a href="/login" class="block w-full btn-ghost text-center">Sign in with Discord</a>
+        <a href="/posts/new" class="block w-full btn-primary text-center group relative overflow-hidden">
+          <div class="absolute inset-0 w-3/12 bg-gradient-shine animate-shine opacity-30"></div>
+          Create Post
+        </a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<script>
+  // Mobile menu toggle
+  const mobileMenuButton = document.querySelector('.mobile-menu-button');
+  const mobileMenu = document.querySelector('#mobile-menu');
+  const menuIcon = document.querySelector('.menu-icon');
+  const closeIcon = document.querySelector('.close-icon');
+
+  if (mobileMenuButton && mobileMenu && menuIcon && closeIcon) {
+    mobileMenuButton.addEventListener('click', () => {
+      mobileMenu.classList.toggle('hidden');
+      menuIcon.classList.toggle('hidden');
+      closeIcon.classList.toggle('hidden');
+    });
+  }
+</script> 

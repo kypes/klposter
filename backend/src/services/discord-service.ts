@@ -51,6 +51,23 @@ interface PostResult {
 }
 
 /**
+ * Interface for Discord message
+ */
+interface DiscordMessage {
+  id: string;
+  content?: string;
+  embeds?: DiscordEmbed[];
+}
+
+/**
+ * Interface for Discord message payload
+ */
+interface DiscordMessagePayload {
+  content?: string;
+  embeds?: DiscordEmbed[];
+}
+
+/**
  * Send a post to Discord via webhook
  */
 export const sendDiscordPost = async (post: any): Promise<PostResult> => {
@@ -129,7 +146,7 @@ export const sendDiscordPost = async (post: any): Promise<PostResult> => {
     const response = await axios.post(channel.webhookUrl, payload);
     
     // Extract message ID from response
-    const messageId = response.data.id;
+    const messageId = (response.data as DiscordMessage).id;
     
     return {
       success: true,
@@ -140,4 +157,113 @@ export const sendDiscordPost = async (post: any): Promise<PostResult> => {
     logger.error('Error sending post to Discord:', error);
     throw new Error('Failed to send post to Discord');
   }
-}; 
+};
+
+export class DiscordService {
+  private readonly token: string;
+
+  constructor(token: string = process.env.DISCORD_BOT_TOKEN || '') {
+    this.token = token;
+  }
+
+  /**
+   * Test a Discord webhook by sending a test message
+   * @param webhookUrl The Discord webhook URL to test
+   * @returns Object indicating success or failure
+   */
+  async testWebhook(webhookUrl: string): Promise<{ success: boolean; message: string }> {
+    try {
+      if (!webhookUrl) {
+        throw new Error('Webhook URL is required');
+      }
+
+      const testEmbed: DiscordEmbed = {
+        title: 'Webhook Test',
+        description: 'This is a test message from KLPoster',
+        color: 0x5865F2, // Discord blue
+        timestamp: new Date().toISOString(),
+        footer: {
+          text: 'KLPoster Webhook Test'
+        }
+      };
+
+      const payload: DiscordWebhookPayload = {
+        username: 'KLPoster Test',
+        embeds: [testEmbed]
+      };
+
+      // Send test message to webhook
+      await axios.post(webhookUrl, payload);
+
+      return {
+        success: true,
+        message: 'Webhook test successful! Check your Discord channel for the test message.'
+      };
+    } catch (error) {
+      logger.error('Webhook test failed:', error);
+      return {
+        success: false,
+        message: 'Webhook test failed. Please check the URL and try again.'
+      };
+    }
+  }
+
+  async sendMessage(channelId: string, payload: DiscordMessagePayload): Promise<string> {
+    try {
+      const response = await axios.post<DiscordMessage>(
+        `https://discord.com/api/v10/channels/${channelId}/messages`,
+        payload,
+        {
+          headers: {
+            Authorization: `Bot ${this.token}`,
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+
+      return (response.data as DiscordMessage).id;
+    } catch (error) {
+      logger.error('Failed to send Discord message:', error);
+      throw error;
+    }
+  }
+
+  async editMessage(
+    channelId: string,
+    messageId: string,
+    payload: DiscordMessagePayload
+  ): Promise<void> {
+    try {
+      await axios.patch<DiscordMessage>(
+        `https://discord.com/api/v10/channels/${channelId}/messages/${messageId}`,
+        payload,
+        {
+          headers: {
+            Authorization: `Bot ${this.token}`,
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+    } catch (error) {
+      logger.error('Failed to edit Discord message:', error);
+      throw error;
+    }
+  }
+
+  async deleteMessage(channelId: string, messageId: string): Promise<void> {
+    try {
+      await axios.delete(
+        `https://discord.com/api/v10/channels/${channelId}/messages/${messageId}`,
+        {
+          headers: {
+            Authorization: `Bot ${this.token}`,
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+    } catch (error) {
+      logger.error('Failed to delete Discord message:', error);
+      throw error;
+    }
+  }
+} 

@@ -1,0 +1,78 @@
+name: Deploy
+
+on:
+  push:
+    branches: [ main ]
+    paths-ignore:
+      - '**.md'
+      - '.github/**'
+      - 'docs/**'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: production
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Use Node.js 18.x
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18.x'
+        cache: 'npm'
+
+    - name: Install and build backend
+      working-directory: ./backend
+      run: |
+        npm ci
+        npm run build
+      env:
+        NODE_ENV: production
+
+    - name: Install and build frontend
+      working-directory: ./frontend
+      run: |
+        npm ci
+        npm run build
+      env:
+        NODE_ENV: production
+
+    - name: Deploy to VPS
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.VPS_HOST }}
+        username: ${{ secrets.VPS_USERNAME }}
+        key: ${{ secrets.VPS_SSH_KEY }}
+        script: |
+          cd /var/www/klposter
+          git pull
+          cd backend
+          npm ci --production
+          npm run build
+          pm2 reload klposter-api
+          cd ../frontend
+          npm ci --production
+          npm run build
+          # Copy static files to Nginx directory
+          sudo cp -r dist/* /var/www/html/
+          # Reload Nginx
+          sudo systemctl reload nginx
+
+    - name: Notify Discord on success
+      uses: sarisia/actions-status-discord@v1
+      if: success()
+      with:
+        webhook: ${{ secrets.DISCORD_WEBHOOK }}
+        title: "✅ Deployment Successful"
+        description: "KLPoster has been deployed to production"
+        color: 0x2ecc71
+
+    - name: Notify Discord on failure
+      uses: sarisia/actions-status-discord@v1
+      if: failure()
+      with:
+        webhook: ${{ secrets.DISCORD_WEBHOOK }}
+        title: "❌ Deployment Failed"
+        description: "KLPoster deployment failed"
+        color: 0xe74c3c 
